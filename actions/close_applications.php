@@ -1,0 +1,17 @@
+<?php
+session_start();
+unset($_SESSION["branch_username"]);
+unset($_SESSION["branch_company"]);
+unset($_SESSION["branch_appnameuser"]);
+unset($_SESSION["branch_userlevel"]);
+unset($_SESSION["branch_userrole"]);
+unset($_SESSION["branch_branch"]);
+unset($_SESSION["branch_application"]);
+print_r('
+	<script>
+		sessionStorage.removeItem("module");
+		sessionStorage.removeItem("navfdsbos");
+		window.location.reload();
+	</script>
+');
+?>
