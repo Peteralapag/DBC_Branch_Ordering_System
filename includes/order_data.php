@@ -53,6 +53,23 @@ $function = new FDSFunctions;
 
 $pendingRequest = $function->getPendingToReceive($branch,$db);
 
+
+$clusterallowed = ['BANKID CLUSTER', 'DIGOS CLUSTER', 'GENSAN CLUSTER'];
+
+$isAllowed = 0;
+$stmt = $db->prepare("SELECT COUNT(*) as count FROM tbl_branch WHERE location IN (?, ?, ?) AND branch = ?");
+$stmt->bind_param("ssss", $clusterallowed[0], $clusterallowed[1], $clusterallowed[2], $branch);
+$stmt->execute();
+$result = $stmt->get_result()->fetch_assoc();
+
+
+if($result['count'] > 0){
+    $isAllowed = 1;
+} else {
+    $isAllowed = 0;
+}
+$stmt->close();
+
 ?>
 <style>
 .table td {
@@ -126,10 +143,15 @@ $pendingRequest = $function->getPendingToReceive($branch,$db);
 <script>
 function orderDetails(controlno,formtype,orderdate,branch)
 {
+
+	var isallowed = '<?php echo $isAllowed; ?>';
 	var pr = '<?php echo $pendingRequest?>';
-	if(pr > 0){
-		swal("System Message","You have " +pr+ " Pending to Receive Order", "warning");
-		return false;
+	if(isallowed == 0){
+		
+		if(pr > 0){
+			swal("System Message","You have " +pr+ " Pending to Receive Order", "warning");
+			return false;
+		}
 	}
 
 	var module = '<?php echo MODULE_NAME; ?>';
